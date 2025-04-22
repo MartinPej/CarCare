@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CarCare</string>
     <string name="title_home">Home</string>
     <string name="title_mechanic">Mechanic</string>
     <string name="title_guides">Guides</string>
     <string name="title_my_car">My Car</string>
+    <string name="maps_api_key" translatable="false">@string/MAPS_API_KEY</string>
 </resources>
