@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CarCare</string>
+    <string name="title_home">Home</string>
+    <string name="title_mechanic">Mechanic</string>
+    <string name="title_guides">Guides</string>
+    <string name="title_my_car">My Car</string>
+</resources>

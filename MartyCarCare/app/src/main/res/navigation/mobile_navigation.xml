@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.cse3mad.carcare.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_mechanic"
+        android:name="com.cse3mad.carcare.ui.mechanic.MechanicFragment"
+        android:label="@string/title_mechanic"
+        tools:layout="@layout/fragment_mechanic" />
+
+    <fragment
+        android:id="@+id/navigation_guides"
+        android:name="com.cse3mad.carcare.ui.guides.GuidesFragment"
+        android:label="@string/title_guides"
+        tools:layout="@layout/fragment_guides" />
+
+    <fragment
+        android:id="@+id/navigation_my_car"
+        android:name="com.cse3mad.carcare.ui.mycar.MyCarFragment"
+        android:label="@string/title_my_car"
+        tools:layout="@layout/fragment_my_car" />
+
+</navigation>
