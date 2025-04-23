@@ -33,10 +33,10 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMechanicBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var mMap: GoogleMap
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var mMap: GoogleMap? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private val db = FirebaseFirestore.getInstance()
-    private lateinit var geocoder: Geocoder
+    private var geocoder: Geocoder? = null
     
     private val LOCATION_PERMISSION_REQUEST = 1
     private val DEFAULT_ZOOM = 12f
@@ -48,16 +48,34 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     ): View {
         _binding = FragmentMechanicBinding.inflate(inflater, container, false)
         
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        geocoder = Geocoder(requireContext())
-        
-        setupSearchInput()
-        
-        val mapFragment = childFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        try {
+            // Initialize location services
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            geocoder = Geocoder(requireContext())
+            
+            // Setup search input
+            setupSearchInput()
+            
+            // Initialize map
+            initializeMap()
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in onCreateView", e)
+            Toast.makeText(context, "Error initializing map", Toast.LENGTH_SHORT).show()
+        }
         
         return binding.root
+    }
+
+    private fun initializeMap() {
+        try {
+            val mapFragment = childFragmentManager
+                .findFragmentById(R.id.map) as? SupportMapFragment
+            mapFragment?.getMapAsync(this)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing map fragment", e)
+            Toast.makeText(context, "Error initializing map", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupSearchInput() {
@@ -79,11 +97,11 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
 
     private fun searchLocation(location: String) {
         try {
-            val addresses = geocoder.getFromLocationName(location, 1)
+            val addresses = geocoder?.getFromLocationName(location, 1)
             if (!addresses.isNullOrEmpty()) {
                 val address = addresses[0]
                 val latLng = LatLng(address.latitude, address.longitude)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM))
+                mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM))
                 fetchNearbyMechanics(latLng)
             } else {
                 Toast.makeText(context, "Location not found", Toast.LENGTH_SHORT).show()
@@ -95,22 +113,23 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        
         try {
+            mMap = googleMap
+            
             // Set default map type
-            mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            mMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
             
             // Apply custom map style
-            val success = mMap.setMapStyle(
+            val success = mMap?.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style)
-            )
+            ) ?: false
+            
             if (!success) {
                 Log.e(TAG, "Style parsing failed")
             }
             
             // Configure UI settings
-            mMap.uiSettings.apply {
+            mMap?.uiSettings?.apply {
                 isZoomControlsEnabled = true
                 isCompassEnabled = true
                 isMyLocationButtonEnabled = true
@@ -119,7 +138,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
             
             // Set initial camera position (default to a known location if no permission)
             val defaultLocation = LatLng(51.5074, -0.1278) // London
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
             
             // Check for location permission
             if (checkLocationPermission()) {
@@ -136,16 +155,16 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     
     private fun setupMap() {
         try {
-            mMap.isMyLocationEnabled = true
+            mMap?.isMyLocationEnabled = true
             
             // Get current location
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { location ->
                 location?.let {
                     val currentLatLng = LatLng(it.latitude, it.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
+                    mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM))
                     fetchNearbyMechanics(currentLatLng)
                 }
-            }.addOnFailureListener { e ->
+            }?.addOnFailureListener { e ->
                 Log.e(TAG, "Error getting location", e)
                 Toast.makeText(context, "Error getting location", Toast.LENGTH_SHORT).show()
             }
@@ -156,7 +175,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     }
     
     private fun fetchNearbyMechanics(currentLocation: LatLng) {
-        mMap.clear()
+        mMap?.clear()
         
         db.collection("mechanics")
             .get()
@@ -171,7 +190,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
                     
                     val mechanicLocation = LatLng(lat, lng)
                     if (isWithinRadius(currentLocation, mechanicLocation, 10.0)) {
-                        mMap.addMarker(
+                        mMap?.addMarker(
                             MarkerOptions()
                                 .position(mechanicLocation)
                                 .title(name)
@@ -183,7 +202,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
                 
                 if (markersAdded) {
                     bounds.include(currentLocation)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100))
+                    mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100))
                 }
             }
             .addOnFailureListener { e ->
@@ -242,5 +261,8 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mMap = null
+        fusedLocationClient = null
+        geocoder = null
     }
 } 

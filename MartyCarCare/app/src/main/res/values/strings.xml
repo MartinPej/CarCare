@@ -5,5 +5,5 @@
     <string name="title_mechanic">Mechanic</string>
     <string name="title_guides">Guides</string>
     <string name="title_my_car">My Car</string>
-    <string name="maps_api_key" translatable="false">@string/MAPS_API_KEY</string>
+    <string name="MAPS_API_KEY" translatable="false">AIzaSyC77_xOdcqmjRpRfMkqZj7zf00U5b-5BbI</string>
 </resources>
