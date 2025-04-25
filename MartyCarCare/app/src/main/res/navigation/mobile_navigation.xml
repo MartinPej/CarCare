@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_my_car">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -27,6 +27,85 @@
         android:id="@+id/navigation_my_car"
         android:name="com.cse3mad.carcare.ui.mycar.MyCarFragment"
         android:label="@string/title_my_car"
-        tools:layout="@layout/fragment_my_car" />
+        tools:layout="@layout/fragment_my_car">
+        <action
+            android:id="@+id/action_myCarFragment_to_emailSignInFragment"
+            app:destination="@id/emailSignInFragment" />
+        <action
+            android:id="@+id/action_myCarFragment_to_emailSignUpFragment"
+            app:destination="@id/emailSignUpFragment" />
+        <action
+            android:id="@+id/action_myCarFragment_to_phoneSignInFragment"
+            app:destination="@id/phoneSignInFragment" />
+        <action
+            android:id="@+id/action_myCarFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailSignInFragment"
+        android:name="com.cse3mad.carcare.ui.auth.EmailSignInFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_email_sign_in">
+        <action
+            android:id="@+id/action_emailSignInFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailSignUpFragment"
+        android:name="com.cse3mad.carcare.ui.auth.EmailSignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_email_sign_up">
+        <action
+            android:id="@+id/action_emailSignUpFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/phoneSignInFragment"
+        android:name="com.cse3mad.carcare.ui.auth.PhoneSignInFragment"
+        android:label="Phone Sign In"
+        tools:layout="@layout/fragment_phone_sign_in">
+        <action
+            android:id="@+id/action_phoneSignInFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/myCarDashboardFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.MyCarDashboardFragment"
+        android:label="My Car Dashboard"
+        tools:layout="@layout/fragment_my_car_dashboard">
+        <action
+            android:id="@+id/action_myCarDashboardFragment_to_carDetailsFormFragment"
+            app:destination="@id/carDetailsFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/carDetailsFormFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.CarDetailsFormFragment"
+        android:label="Car Details"
+        tools:layout="@layout/fragment_car_details_form">
+        <action
+            android:id="@+id/action_carDetailsFormFragment_to_carDisplayFragment"
+            app:destination="@id/carDisplayFragment">
+            <argument
+                android:name="make"
+                app:argType="string" />
+            <argument
+                android:name="model"
+                app:argType="string" />
+            <argument
+                android:name="year"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/carDisplayFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.CarDisplayFragment"
+        android:label="Your Car"
+        tools:layout="@layout/fragment_car_display" />
 
 </navigation>
