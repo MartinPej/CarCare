@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_mechanic"
+        android:icon="@drawable/ic_mechanic_black_24dp"
+        android:title="@string/title_mechanic" />
+
+    <item
+        android:id="@+id/navigation_guides"
+        android:icon="@drawable/ic_guides_black_24dp"
+        android:title="@string/title_guides" />
+
+    <item
+        android:id="@+id/navigation_my_car"
+        android:icon="@drawable/ic_car_black_24dp"
+        android:title="@string/title_my_car" />
+
+</menu>

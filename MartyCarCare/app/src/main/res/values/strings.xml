@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CarCare</string>
+    <string name="title_home">Home</string>
+    <string name="title_mechanic">Mechanic</string>
+    <string name="title_guides">Guides</string>
+    <string name="title_my_car">My Car</string>
+    <string name="MAPS_API_KEY" translatable="false">AIzaSyC77_xOdcqmjRpRfMkqZj7zf00U5b-5BbI</string>
+    <string name="default_web_client_id" translatable="false">83751531749-3jqjr7v7dfcmkj4vg0ud6gv3oo4i42o0.apps.googleusercontent.com</string>
+</resources>
