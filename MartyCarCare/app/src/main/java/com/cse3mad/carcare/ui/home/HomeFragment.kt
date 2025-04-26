@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cse3mad.carcare.databinding.FragmentHomeBinding
+import com.cse3mad.carcare.utils.ThemeManager
 
 class HomeFragment : Fragment() {
 
@@ -32,6 +33,17 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        // Set initial switch state based on saved preference
+        context?.let { ctx ->
+            binding.themeSwitch.isChecked = ThemeManager.isDarkMode(ctx)
+
+            // Handle theme switch changes
+            binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+                ThemeManager.setDarkMode(ctx, isChecked)
+            }
+        }
+
         return root
     }
 

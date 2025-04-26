@@ -60,7 +60,7 @@ class CarDisplayFragment : Fragment() {
             val year = bundle.getString("year", "")
 
             // Display car name with year
-            binding.carNameText.text = "$year $make $model"
+            binding.carNameTextView.text = "$year $make $model"
 
             // Create path using make and model as entered
             val basePath = "cars/$make $model"

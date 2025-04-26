@@ -71,7 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Continue as Guest" />
+                android:text="Continue as Guest"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white" />
 
             <TextView
                 android:id="@+id/txt_sign_up"
@@ -80,7 +82,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Don't have an account? Sign up"
                 android:textAlignment="center"
-                android:textColor="@color/design_default_color_primary" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

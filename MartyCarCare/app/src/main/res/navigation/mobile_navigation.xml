@@ -130,6 +130,24 @@
             app:destination="@id/carDetailsFormFragment"
             app:popUpTo="@id/navigation_my_car"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_addOilChangeFragment"
+            app:destination="@+id/addOilChangeFragment" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_addCarServiceFragment"
+            app:destination="@+id/addCarServiceFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addOilChangeFragment"
+        android:name="com.cse3mad.carcare.ui.maintenance.AddOilChangeFragment"
+        android:label="Add Oil Change"
+        tools:layout="@layout/fragment_add_oil_change" />
+
+    <fragment
+        android:id="@+id/addCarServiceFragment"
+        android:name="com.cse3mad.carcare.ui.maintenance.AddCarServiceFragment"
+        android:label="Add Car Service"
+        tools:layout="@layout/fragment_add_car_service" />
 
 </navigation>
