@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.cse3mad.carcare.R
 import com.cse3mad.carcare.databinding.FragmentCarDetailsFormBinding
+import com.cse3mad.carcare.utils.CarPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -73,11 +74,12 @@ class CarDetailsFormFragment : Fragment() {
 
     private fun loadSavedCarDetails() {
         val currentUser = auth.currentUser
-        if (currentUser != null) {
+        if (currentUser != null && !currentUser.isAnonymous) {
+            // For logged in users, load from Firestore
             db.collection("users")
                 .document(currentUser.uid)
                 .collection("cars")
-                .document("primary") // Using "primary" as we're storing one car per user for now
+                .document("primary")
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null && document.exists()) {
@@ -85,40 +87,115 @@ class CarDetailsFormFragment : Fragment() {
                         val make = document.getString("make")
                         val model = document.getString("model")
                         val year = document.getString("year")
-
+                        
                         // Set spinners to saved values
-                        if (!make.isNullOrEmpty()) {
-                            val makePosition = carMakes.indexOf(make)
-                            if (makePosition != -1) {
-                                binding.makeSpinner.setSelection(makePosition)
-                                selectedMake = make
-                                
-                                // Update model spinner and set selection
-                                updateModelSpinner(make)
-                                if (!model.isNullOrEmpty()) {
-                                    val models = modelsByMake[make] ?: listOf("")
-                                    val modelPosition = models.indexOf(model)
-                                    if (modelPosition != -1) {
-                                        binding.modelSpinner.setSelection(modelPosition)
-                                        selectedModel = model
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!year.isNullOrEmpty()) {
-                            val yearPosition = years.indexOf(year)
-                            if (yearPosition != -1) {
-                                binding.yearSpinner.setSelection(yearPosition)
-                                selectedYear = year
-                            }
-                        }
+                        setSpinnerValues(make, model, year)
+                    } else {
+                        // Check local storage as fallback
+                        loadFromLocalStorage()
                     }
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error loading car details: ${e.message}", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener {
+                    // On error, try local storage
+                    loadFromLocalStorage()
                 }
+        } else {
+            // For guest users, load from local storage
+            loadFromLocalStorage()
         }
+    }
+
+    private fun loadFromLocalStorage() {
+        if (CarPreferences.hasCarDetails()) {
+            val (make, model, year) = CarPreferences.getCarDetails()
+            setSpinnerValues(make, model, year)
+        }
+    }
+
+    private fun setSpinnerValues(make: String?, model: String?, year: String?) {
+        if (!make.isNullOrEmpty()) {
+            val makePosition = carMakes.indexOf(make)
+            if (makePosition != -1) {
+                binding.makeSpinner.setSelection(makePosition)
+                selectedMake = make
+                
+                // Update model spinner and set selection
+                updateModelSpinner(make)
+                if (!model.isNullOrEmpty()) {
+                    val models = modelsByMake[make] ?: listOf("")
+                    val modelPosition = models.indexOf(model)
+                    if (modelPosition != -1) {
+                        binding.modelSpinner.setSelection(modelPosition)
+                        selectedModel = model
+                    }
+                }
+            }
+        }
+        
+        if (!year.isNullOrEmpty()) {
+            val yearPosition = years.indexOf(year)
+            if (yearPosition != -1) {
+                binding.yearSpinner.setSelection(yearPosition)
+                selectedYear = year
+            }
+        }
+    }
+
+    private fun saveCarDetails() {
+        if (validateSelections()) {
+            // Always save to local storage
+            CarPreferences.saveCarDetails(
+                selectedMake ?: "",
+                selectedModel ?: "",
+                selectedYear ?: ""
+            )
+            
+            val currentUser = auth.currentUser
+            if (currentUser != null && !currentUser.isAnonymous) {
+                // For logged in users, also save to Firestore
+                val carData = hashMapOf(
+                    "make" to selectedMake,
+                    "model" to selectedModel,
+                    "year" to selectedYear,
+                    "updatedAt" to System.currentTimeMillis()
+                )
+
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("cars")
+                    .document("primary")
+                    .set(carData)
+                    .addOnSuccessListener {
+                        navigateToDisplay()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(context, "Error saving to cloud: ${e.message}", Toast.LENGTH_SHORT).show()
+                        // Still navigate even if cloud save fails
+                        navigateToDisplay()
+                    }
+            } else {
+                // For guest users, save locally and navigate
+                CarPreferences.saveCarDetails(
+                    selectedMake ?: "",
+                    selectedModel ?: "",
+                    selectedYear ?: ""
+                )
+                navigateToDisplay()
+            }
+        }
+    }
+
+    private fun navigateToDisplay() {
+        val bundle = Bundle().apply {
+            putString("make", selectedMake)
+            putString("model", selectedModel)
+            putString("year", selectedYear)
+        }
+
+        findNavController().navigate(
+            R.id.action_carDetailsFormFragment_to_carDisplayFragment,
+            bundle
+        )
     }
 
     private fun setupSpinners() {
@@ -198,58 +275,16 @@ class CarDetailsFormFragment : Fragment() {
 
     private fun setupConfirmButton() {
         binding.confirmButton.setOnClickListener {
-            if (selectedMake.isNullOrEmpty() || selectedModel.isNullOrEmpty() || selectedYear.isNullOrEmpty()) {
-                Toast.makeText(context, "Please select all fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val currentUser = auth.currentUser
-            if (currentUser != null) {
-                // Create car data map
-                val carData = hashMapOf(
-                    "make" to selectedMake,
-                    "model" to selectedModel,
-                    "year" to selectedYear,
-                    "updatedAt" to System.currentTimeMillis()
-                )
-
-                // Save to Firestore
-                db.collection("users")
-                    .document(currentUser.uid)
-                    .collection("cars")
-                    .document("primary") // Using "primary" as we're storing one car per user for now
-                    .set(carData)
-                    .addOnSuccessListener {
-                        // Create bundle for navigation
-                        val bundle = Bundle().apply {
-                            putString("make", selectedMake)
-                            putString("model", selectedModel)
-                            putString("year", selectedYear)
-                        }
-
-                        // Navigate to display fragment
-                        findNavController().navigate(
-                            R.id.action_carDetailsFormFragment_to_carDisplayFragment,
-                            bundle
-                        )
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(context, "Error saving car details: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                // If user is not logged in, just navigate without saving
-                val bundle = Bundle().apply {
-                    putString("make", selectedMake)
-                    putString("model", selectedModel)
-                    putString("year", selectedYear)
-                }
-
-                findNavController().navigate(
-                    R.id.action_carDetailsFormFragment_to_carDisplayFragment,
-                    bundle
-                )
-            }
+            saveCarDetails()
         }
+    }
+
+    private fun validateSelections(): Boolean {
+        if (selectedMake.isNullOrEmpty() || selectedModel.isNullOrEmpty() || selectedYear.isNullOrEmpty()) {
+            Toast.makeText(context, "Please select all fields", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     override fun onDestroyView() {

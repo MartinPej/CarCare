@@ -1,0 +1,9 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /cars/{image} {
+      allow read: if true;  // Allow public read access to car images
+      allow write: if request.auth != null;  // Only authenticated users can upload
+    }
+  }
+} 

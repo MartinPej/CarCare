@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_my_car">
+    app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -98,6 +98,19 @@
         <action
             android:id="@+id/action_myCarDashboardFragment_to_carDetailsFormFragment"
             app:destination="@id/carDetailsFormFragment" />
+        <action
+            android:id="@+id/action_myCarDashboardFragment_to_carDisplayFragment"
+            app:destination="@id/carDisplayFragment">
+            <argument
+                android:name="make"
+                app:argType="string" />
+            <argument
+                android:name="model"
+                app:argType="string" />
+            <argument
+                android:name="year"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
@@ -136,6 +149,16 @@
         <action
             android:id="@+id/action_carDisplayFragment_to_addCarServiceFragment"
             app:destination="@+id/addCarServiceFragment" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_navigation_my_car"
+            app:destination="@id/navigation_my_car"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
