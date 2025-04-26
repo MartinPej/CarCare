@@ -43,7 +43,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Sign in with Email" />
+                android:text="Sign in with Email"
+                app:icon="@drawable/ic_email"
+                app:iconGravity="start" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_phone_sign_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Sign in with Phone"
+                app:icon="@drawable/ic_phone"
+                app:iconGravity="start" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_google_sign_in"
@@ -55,20 +66,12 @@
                 app:iconGravity="start" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_facebook_sign_in"
+                android:id="@+id/btn_guest_sign_in"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Sign in with Facebook"
-                app:icon="@drawable/ic_facebook"
-                app:iconGravity="start" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_phone_sign_in"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Sign in with Phone" />
+                android:text="Continue as Guest" />
 
             <TextView
                 android:id="@+id/txt_sign_up"

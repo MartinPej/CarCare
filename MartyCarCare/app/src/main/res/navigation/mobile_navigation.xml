@@ -30,13 +30,25 @@
         tools:layout="@layout/fragment_my_car">
         <action
             android:id="@+id/action_myCarFragment_to_emailSignInFragment"
-            app:destination="@id/emailSignInFragment" />
+            app:destination="@id/emailSignInFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_myCarFragment_to_emailSignUpFragment"
-            app:destination="@id/emailSignUpFragment" />
+            app:destination="@id/emailSignUpFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_myCarFragment_to_phoneSignInFragment"
-            app:destination="@id/phoneSignInFragment" />
+            app:destination="@id/phoneSignInFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_myCarFragment_to_myCarDashboardFragment"
             app:destination="@id/myCarDashboardFragment" />
@@ -49,7 +61,9 @@
         tools:layout="@layout/fragment_email_sign_in">
         <action
             android:id="@+id/action_emailSignInFragment_to_myCarDashboardFragment"
-            app:destination="@id/myCarDashboardFragment" />
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -59,7 +73,9 @@
         tools:layout="@layout/fragment_email_sign_up">
         <action
             android:id="@+id/action_emailSignUpFragment_to_myCarDashboardFragment"
-            app:destination="@id/myCarDashboardFragment" />
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -69,7 +85,9 @@
         tools:layout="@layout/fragment_phone_sign_in">
         <action
             android:id="@+id/action_phoneSignInFragment_to_myCarDashboardFragment"
-            app:destination="@id/myCarDashboardFragment" />
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -106,6 +124,12 @@
         android:id="@+id/carDisplayFragment"
         android:name="com.cse3mad.carcare.ui.mycar.CarDisplayFragment"
         android:label="Your Car"
-        tools:layout="@layout/fragment_car_display" />
+        tools:layout="@layout/fragment_car_display">
+        <action
+            android:id="@+id/action_carDisplayFragment_to_carDetailsFormFragment"
+            app:destination="@id/carDetailsFormFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

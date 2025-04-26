@@ -69,6 +69,7 @@ tasks.whenTaskAdded {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -92,9 +93,6 @@ dependencies {
     
     // Google Sign In
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    
-    // Facebook Sign In
-    implementation("com.facebook.android:facebook-login:16.3.0")
     
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")

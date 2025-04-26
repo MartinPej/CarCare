@@ -10,24 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.cse3mad.carcare.R
 import com.cse3mad.carcare.databinding.FragmentMyCarBinding
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import java.util.Arrays
 
 class MyCarFragment : Fragment() {
     private var _binding: FragmentMyCarBinding? = null
@@ -35,7 +28,7 @@ class MyCarFragment : Fragment() {
     
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var callbackManager: CallbackManager
+    private lateinit var db: FirebaseFirestore
     
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -49,8 +42,9 @@ class MyCarFragment : Fragment() {
     ): View {
         _binding = FragmentMyCarBinding.inflate(inflater, container, false)
         
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         auth = Firebase.auth
+        db = FirebaseFirestore.getInstance()
         
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -59,9 +53,6 @@ class MyCarFragment : Fragment() {
             .build()
         
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-        
-        // Initialize Facebook CallbackManager
-        callbackManager = CallbackManager.Factory.create()
         
         setupClickListeners()
         
@@ -77,12 +68,12 @@ class MyCarFragment : Fragment() {
             signInWithGoogle()
         }
         
-        binding.btnFacebookSignIn.setOnClickListener {
-            signInWithFacebook()
-        }
-        
         binding.btnPhoneSignIn.setOnClickListener {
             findNavController().navigate(R.id.action_myCarFragment_to_phoneSignInFragment)
+        }
+        
+        binding.btnGuestSignIn.setOnClickListener {
+            signInAsGuest()
         }
         
         binding.txtSignUp.setOnClickListener {
@@ -95,47 +86,21 @@ class MyCarFragment : Fragment() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    private fun signInWithFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(
-            this,
-            Arrays.asList("email", "public_profile")
-        )
-        
-        LoginManager.getInstance().registerCallback(callbackManager,
-            object : FacebookCallback<LoginResult> {
-                override fun onSuccess(result: LoginResult) {
-                    handleFacebookAccessToken(result.accessToken)
-                }
-
-                override fun onCancel() {
-                    Toast.makeText(context, "Facebook sign in cancelled", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onError(error: FacebookException) {
-                    Toast.makeText(context, "Facebook sign in failed: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun handleFacebookAccessToken(token: AccessToken) {
-        val credential = FacebookAuthProvider.getCredential(token.token)
-        auth.signInWithCredential(credential)
+    private fun signInAsGuest() {
+        auth.signInAnonymously()
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     // Sign in success
                     findNavController().navigate(R.id.action_myCarFragment_to_myCarDashboardFragment)
                 } else {
                     // Sign in failed
-                    Toast.makeText(context, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Guest sign in failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        
-        // Pass the activity result back to the Facebook SDK
-        callbackManager.onActivityResult(requestCode, resultCode, data)
         
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -157,8 +122,42 @@ class MyCarFragment : Fragment() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success
-                    findNavController().navigate(R.id.action_myCarFragment_to_myCarDashboardFragment)
+                    // Get the current user
+                    val user = auth.currentUser
+                    
+                    // Create a user data map
+                    val userData = hashMapOf(
+                        "uid" to user?.uid,
+                        "displayName" to user?.displayName,
+                        "email" to user?.email,
+                        "photoUrl" to user?.photoUrl?.toString(),
+                        "provider" to "google",
+                        "createdAt" to System.currentTimeMillis()
+                    )
+                    
+                    // Store user data in Firestore
+                    user?.let { firebaseUser ->
+                        db.collection("users")
+                            .document(firebaseUser.uid)
+                            .set(userData)
+                            .addOnSuccessListener {
+                                // Navigate based on current fragment
+                                try {
+                                    findNavController().navigate(R.id.action_myCarFragment_to_myCarDashboardFragment)
+                                } catch (e: Exception) {
+                                    // If navigation fails, try to navigate to home
+                                    try {
+                                        findNavController().navigate(R.id.navigation_home)
+                                    } catch (e2: Exception) {
+                                        // If all navigation fails, show error
+                                        Toast.makeText(context, "Navigation failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "Failed to store user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                 } else {
                     // Sign in failed
                     Toast.makeText(context, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
