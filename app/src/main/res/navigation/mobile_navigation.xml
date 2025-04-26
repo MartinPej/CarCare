@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.cse3mad.carcare.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_mechanic"
+        android:name="com.cse3mad.carcare.ui.mechanic.MechanicFragment"
+        android:label="@string/title_mechanic"
+        tools:layout="@layout/fragment_mechanic" />
+
+    <fragment
+        android:id="@+id/navigation_guides"
+        android:name="com.cse3mad.carcare.ui.guides.GuidesFragment"
+        android:label="@string/title_guides"
+        tools:layout="@layout/fragment_guides" />
+
+    <fragment
+        android:id="@+id/navigation_my_car"
+        android:name="com.cse3mad.carcare.ui.mycar.MyCarFragment"
+        android:label="@string/title_my_car"
+        tools:layout="@layout/fragment_my_car">
+        <action
+            android:id="@+id/action_myCarFragment_to_emailSignInFragment"
+            app:destination="@id/emailSignInFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCarFragment_to_emailSignUpFragment"
+            app:destination="@id/emailSignUpFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCarFragment_to_phoneSignInFragment"
+            app:destination="@id/phoneSignInFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myCarFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailSignInFragment"
+        android:name="com.cse3mad.carcare.ui.auth.EmailSignInFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_email_sign_in">
+        <action
+            android:id="@+id/action_emailSignInFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailSignUpFragment"
+        android:name="com.cse3mad.carcare.ui.auth.EmailSignUpFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_email_sign_up">
+        <action
+            android:id="@+id/action_emailSignUpFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/phoneSignInFragment"
+        android:name="com.cse3mad.carcare.ui.auth.PhoneSignInFragment"
+        android:label="Phone Sign In"
+        tools:layout="@layout/fragment_phone_sign_in">
+        <action
+            android:id="@+id/action_phoneSignInFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/myCarDashboardFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.MyCarDashboardFragment"
+        android:label="My Car Dashboard"
+        tools:layout="@layout/fragment_my_car_dashboard">
+        <action
+            android:id="@+id/action_myCarDashboardFragment_to_carDetailsFormFragment"
+            app:destination="@id/carDetailsFormFragment" />
+        <action
+            android:id="@+id/action_myCarDashboardFragment_to_carDisplayFragment"
+            app:destination="@id/carDisplayFragment">
+            <argument
+                android:name="make"
+                app:argType="string" />
+            <argument
+                android:name="model"
+                app:argType="string" />
+            <argument
+                android:name="year"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/carDetailsFormFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.CarDetailsFormFragment"
+        android:label="Car Details"
+        tools:layout="@layout/fragment_car_details_form">
+        <action
+            android:id="@+id/action_carDetailsFormFragment_to_carDisplayFragment"
+            app:destination="@id/carDisplayFragment">
+            <argument
+                android:name="make"
+                app:argType="string" />
+            <argument
+                android:name="model"
+                app:argType="string" />
+            <argument
+                android:name="year"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/carDisplayFragment"
+        android:name="com.cse3mad.carcare.ui.mycar.CarDisplayFragment"
+        android:label="Your Car"
+        tools:layout="@layout/fragment_car_display">
+        <action
+            android:id="@+id/action_carDisplayFragment_to_carDetailsFormFragment"
+            app:destination="@id/carDetailsFormFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_addOilChangeFragment"
+            app:destination="@+id/addOilChangeFragment" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_addCarServiceFragment"
+            app:destination="@+id/addCarServiceFragment" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_navigation_my_car"
+            app:destination="@id/navigation_my_car"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_carDisplayFragment_to_myCarDashboardFragment"
+            app:destination="@id/myCarDashboardFragment"
+            app:popUpTo="@id/navigation_my_car"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addOilChangeFragment"
+        android:name="com.cse3mad.carcare.ui.maintenance.AddOilChangeFragment"
+        android:label="Add Oil Change"
+        tools:layout="@layout/fragment_add_oil_change" />
+
+    <fragment
+        android:id="@+id/addCarServiceFragment"
+        android:name="com.cse3mad.carcare.ui.maintenance.AddCarServiceFragment"
+        android:label="Add Car Service"
+        tools:layout="@layout/fragment_add_car_service" />
+
+</navigation>
