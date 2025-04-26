@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.carcare",
+  "applicationId": "com.cse3mad.carcare",
   "variantName": "debug",
   "elements": [
     {
@@ -16,6 +16,5 @@
       "outputFile": "app-debug.apk"
     }
   ],
-  "elementType": "File",
-  "minSdkVersionForDexing": 24
+  "elementType": "File"
 }
