@@ -6,8 +6,6 @@ plugins {
     id("androidx.navigation.safeargs")
 }
 
-val mapsApiKey: String = project.findProperty("MAPS_API_KEY")?.toString() ?: ""
-
 android {
     namespace = "com.cse3mad.carcare"
     compileSdk = 34
@@ -22,6 +20,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Set Maps API key
+        val mapsApiKey: String = project.properties["MAPS_API_KEY"]?.toString() ?: ""
         resValue("string", "MAPS_API_KEY", mapsApiKey)
     }
 
@@ -83,6 +82,13 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("com.google.android.gms:play-services-base:18.3.0")
+    implementation("com.google.android.libraries.places:places:3.3.0")
+    
+    // Retrofit for API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
@@ -97,11 +103,6 @@ dependencies {
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
-    
-    // Retrofit for API calls
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

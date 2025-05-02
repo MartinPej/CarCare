@@ -170,15 +170,51 @@ object MaintenanceManager {
         val maintenanceDate = getMaintenanceDate()
         if (maintenanceDate == 0L) return 0
         
-        val currentTime = System.currentTimeMillis()
-        return TimeUnit.MILLISECONDS.toDays(maintenanceDate - currentTime).toInt()
+        // Get current time and normalize to start of day
+        val currentCalendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        // Create calendar for maintenance date
+        val maintenanceCalendar = Calendar.getInstance().apply {
+            timeInMillis = maintenanceDate
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        // Calculate days between
+        val diff = maintenanceCalendar.timeInMillis - currentCalendar.timeInMillis
+        return TimeUnit.MILLISECONDS.toDays(diff).toInt()
     }
 
     suspend fun getDaysUntilOilChange(): Int {
         val oilChangeDate = getOilChangeDate()
         if (oilChangeDate == 0L) return 0
         
-        val currentTime = System.currentTimeMillis()
-        return TimeUnit.MILLISECONDS.toDays(oilChangeDate - currentTime).toInt()
+        // Get current time and normalize to start of day
+        val currentCalendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        // Create calendar for oil change date
+        val oilChangeCalendar = Calendar.getInstance().apply {
+            timeInMillis = oilChangeDate
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        // Calculate days between
+        val diff = oilChangeCalendar.timeInMillis - currentCalendar.timeInMillis
+        return TimeUnit.MILLISECONDS.toDays(diff).toInt()
     }
 } 
