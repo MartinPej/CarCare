@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class GuidesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is guides Fragment"
+        value = "Welcome To The Guides Area"
     }
     val text: LiveData<String> = _text
 } 

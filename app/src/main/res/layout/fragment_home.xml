@@ -6,57 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
+        android:id="@+id/serviceReminderCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardBackgroundColor="@color/gray"
         app:cardCornerRadius="16dp"
-        app:layout_constraintTop_toBottomOf="@id/text_home">
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
             android:padding="16dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_dark_mode"
-                app:tint="@color/white" />
-
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:text="Dark Mode"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/themeSwitch"
+                android:id="@+id/serviceTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true" />
+                android:text="Next Car Service"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/serviceDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/serviceTitle"
+                android:layout_marginTop="4dp"
+                android:text="Not Set"
+                android:textSize="16sp" />
 
+            <ImageButton
+                android:id="@+id/editServiceBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Edit Service Date"
+                android:src="@android:drawable/ic_menu_edit" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/oilReminderCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/serviceReminderCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/oilTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next Oil Change"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/oilDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/oilTitle"
+                android:layout_marginTop="4dp"
+                android:text="Not Set"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/editOilBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Edit Oil Change Date"
+                android:src="@android:drawable/ic_menu_edit" />
+        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
