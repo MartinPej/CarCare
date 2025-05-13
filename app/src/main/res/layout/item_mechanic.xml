@@ -72,5 +72,15 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/mechanic_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_phone"
+            android:drawablePadding="4dp"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView> 
