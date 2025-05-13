@@ -1,15 +1,19 @@
 package com.cse3mad.carcare.ui.mechanic
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.cse3mad.carcare.R
 import com.google.android.libraries.places.api.model.Place
 import kotlin.math.roundToInt
+import androidx.appcompat.app.AlertDialog
 
 class MechanicListAdapter(private val onItemClick: (MechanicInfo) -> Unit) :
     ListAdapter<MechanicListAdapter.Item, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -65,6 +69,7 @@ class MechanicListAdapter(private val onItemClick: (MechanicInfo) -> Unit) :
         private val distanceTextView: TextView = itemView.findViewById(R.id.mechanic_distance)
         private val ratingTextView: TextView = itemView.findViewById(R.id.mechanic_rating)
         private val ratingContainer: View = itemView.findViewById(R.id.rating_container)
+        private val phoneTextView: TextView = itemView.findViewById(R.id.mechanic_phone)
 
         fun bind(mechanicInfo: MechanicInfo) {
             val place = mechanicInfo.place
@@ -83,7 +88,33 @@ class MechanicListAdapter(private val onItemClick: (MechanicInfo) -> Unit) :
                 ratingContainer.visibility = View.GONE
             }
 
+            // Set phone number and handle click
+            place.phoneNumber?.let { phone ->
+                phoneTextView.text = phone
+                phoneTextView.visibility = View.VISIBLE
+                phoneTextView.setOnClickListener {
+                    showCallConfirmationDialog(phone)
+                }
+            } ?: run {
+                phoneTextView.visibility = View.GONE
+            }
+
+            // Handle click on the entire item
             itemView.setOnClickListener { onItemClick(mechanicInfo) }
+        }
+
+        private fun showCallConfirmationDialog(phoneNumber: String) {
+            AlertDialog.Builder(itemView.context)
+                .setTitle("Call Mechanic?")
+                .setMessage("Would you like to call this mechanic?")
+                .setPositiveButton("Yes") { _, _ ->
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$phoneNumber")
+                    }
+                    itemView.context.startActivity(intent)
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 

@@ -49,6 +49,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var placesClient: PlacesClient? = null
     private var geocoder: Geocoder? = null
+    private val markers = mutableListOf<Marker>()
     
     private val LOCATION_PERMISSION_REQUEST = 1
     private val DEFAULT_ZOOM = 14f
@@ -130,7 +131,11 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
     private fun setupRecyclerView() {
         mechanicAdapter = MechanicListAdapter { mechanicInfo ->
             // Center map on selected mechanic
-            mMap?.animateCamera(CameraUpdateFactory.newLatLng(mechanicInfo.latLng))
+            mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(mechanicInfo.latLng, DEFAULT_ZOOM))
+            // Find and show the marker's info window
+            markers.find { marker ->
+                marker.position == mechanicInfo.latLng
+            }?.showInfoWindow()
             // Close sidebar
             viewModel.toggleSidebar()
         }
@@ -158,13 +163,16 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
 
     private fun updateMapMarkers(mechanics: List<MechanicInfo>) {
         mMap?.clear()
+        markers.clear()
         mechanics.forEach { mechanic ->
             mMap?.addMarker(
                 MarkerOptions()
                     .position(mechanic.latLng)
                     .title(mechanic.place.name)
                     .snippet(mechanic.place.address)
-            )
+            )?.let { marker ->
+                markers.add(marker)
+            }
         }
     }
 
@@ -227,7 +235,8 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
                 Place.Field.USER_RATINGS_TOTAL,
                 Place.Field.BUSINESS_STATUS,
                 Place.Field.TYPES,
-                Place.Field.OPENING_HOURS
+                Place.Field.OPENING_HOURS,
+                Place.Field.PHONE_NUMBER
             )
 
             // Create a location bias (approximately 5km radius)
@@ -462,6 +471,7 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
             try {
                 // Clear existing markers
                 mMap?.clear()
+                markers.clear()
                 
                 // Add markers for each place
                 places.forEach { place ->
@@ -471,7 +481,9 @@ class MechanicFragment : Fragment(), OnMapReadyCallback {
                             .title(place.place.name)
                             .snippet(place.place.address)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    )
+                    )?.let { marker ->
+                        markers.add(marker)
+                    }
                 }
 
                 // Update the sidebar with new places
