@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
 
         val calendar = Calendar.getInstance()
 
-        // --- Next Service Due: Edit Date button ---
         binding.editServiceDate.setOnClickListener {
             val datePicker = DatePickerDialog(requireContext(),
                 { _, year, month, dayOfMonth ->
@@ -43,7 +42,6 @@ class HomeFragment : Fragment() {
             datePicker.show()
         }
 
-        // --- Next Oil Change: Edit Date button ---
         binding.editOilDate.setOnClickListener {
             val datePicker = DatePickerDialog(requireContext(),
                 { _, year, month, dayOfMonth ->
