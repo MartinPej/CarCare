@@ -22,41 +22,45 @@ class HomeFragment : Fragment() {
     ): View {
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        val view = binding.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Next Car Service Button
-        binding.editServiceBtn.setOnClickListener {
-            showDatePicker { day, month, year ->
-                binding.serviceDate.text = "$day/${month + 1}/$year"
-            }
-        }
-
-        // Next Oil Change Button
-        binding.editOilBtn.setOnClickListener {
-            showDatePicker { day, month, year ->
-                binding.oilDate.text = "$day/${month + 1}/$year"
-            }
-        }
-    }
-
-    private fun showDatePicker(onDateSelected: (day: Int, month: Int, year: Int) -> Unit) {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(
-            requireContext(),
-            { _, selectedYear, selectedMonth, selectedDay ->
-                onDateSelected(selectedDay, selectedMonth, selectedYear)
-            },
-            year, month, day
-        )
-        datePickerDialog.show()
+        // --- Next Service Due: Edit Date button ---
+        binding.editServiceDate.setOnClickListener {
+            val datePicker = DatePickerDialog(requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = Calendar.getInstance().apply {
+                        set(year, month, dayOfMonth)
+                    }
+                    val diff = ((selectedDate.timeInMillis - calendar.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+                    binding.serviceDays.text = "$diff days remaining"
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        // --- Next Oil Change: Edit Date button ---
+        binding.editOilDate.setOnClickListener {
+            val datePicker = DatePickerDialog(requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = Calendar.getInstance().apply {
+                        set(year, month, dayOfMonth)
+                    }
+                    val diff = ((selectedDate.timeInMillis - calendar.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+                    binding.oilDays.text = "$diff days remaining"
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
+
+        return view
     }
 
     override fun onDestroyView() {
