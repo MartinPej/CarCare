@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.cse3mad.carcare.R
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,6 +18,8 @@ class MechanicRatingAdapter(
     private val onEditClick: (MechanicRating) -> Unit,
     private val onDeleteClick: (MechanicRating) -> Unit
 ) : ListAdapter<MechanicRating, MechanicRatingAdapter.RatingViewHolder>(RatingDiffCallback()) {
+
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatingViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,6 +37,7 @@ class MechanicRatingAdapter(
         private val onDeleteClick: (MechanicRating) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val mechanicNameText: TextView = itemView.findViewById(R.id.mechanicNameText)
+        private val locationText: TextView = itemView.findViewById(R.id.locationText)
         private val dateVisitedText: TextView = itemView.findViewById(R.id.dateVisitedText)
         private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
         private val commentText: TextView = itemView.findViewById(R.id.commentText)
@@ -43,12 +47,22 @@ class MechanicRatingAdapter(
 
         fun bind(rating: MechanicRating) {
             mechanicNameText.text = rating.mechanicName
+            locationText.text = "${rating.suburb}, ${rating.city}, ${rating.country}"
             dateVisitedText.text = dateFormat.format(rating.dateVisited)
             ratingBar.rating = rating.rating
             commentText.text = rating.comment
 
-            editButton.setOnClickListener { onEditClick(rating) }
-            deleteButton.setOnClickListener { onDeleteClick(rating) }
+            // Only show edit and delete buttons if the rating belongs to the current user
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+            val isOwner = currentUserId == rating.userId
+
+            editButton.visibility = if (isOwner) View.VISIBLE else View.GONE
+            deleteButton.visibility = if (isOwner) View.VISIBLE else View.GONE
+
+            if (isOwner) {
+                editButton.setOnClickListener { onEditClick(rating) }
+                deleteButton.setOnClickListener { onDeleteClick(rating) }
+            }
         }
     }
 

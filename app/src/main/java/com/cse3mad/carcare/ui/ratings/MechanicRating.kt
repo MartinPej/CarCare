@@ -8,6 +8,9 @@ data class MechanicRating(
     @DocumentId
     val id: String = "",
     val mechanicName: String = "",
+    val country: String = "",
+    val city: String = "",
+    val suburb: String = "",
     val dateVisited: Date = Date(),
     val rating: Float = 0f,
     val comment: String = "",

@@ -24,6 +24,14 @@
             android:maxLines="2"
             android:ellipsize="end"/>
 
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp"/>
+
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
