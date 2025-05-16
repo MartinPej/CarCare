@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // User-specific data with authentication requirements
+    match /users/{userId} {
+      // Allow users to read and write their own data
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow access to nested cars collection
+      match /cars/{carId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Mechanic ratings collection
+    match /mechanic_ratings/{ratingId} {
+      // Allow anyone to read ratings
+      allow read: if true;
+      
+      // Allow anyone to write during development
+      allow write: if true;
+    }
+
+    // For all other collections/documents
+    match /{document=**} {
+      // Allow read access until May 26, 2025 (you may want to adjust this)
+      allow read: if request.time < timestamp.date(2025, 5, 26);
+      
+      // Only allow write access to authenticated users
+      allow write: if request.auth != null && request.time < timestamp.date(2025, 5, 26);
+    }
+  }
+} 
